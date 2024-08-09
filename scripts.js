@@ -95,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
     addWebsite('images (16).jpeg', 'IPST', 'Situs Official Organisasi Sekolahku...', 'https://ipstparabek.rf.gd');
 
     // Example usage: Add an app
-    addApp('fl.png', 'Flanime Web App', 'Nonton Yuk', 'https://githubusercontent.com/flanime-web-app');
+    addApp('fl.png', 'Flanime Web App', 'Nonton Yuk', 'https://github.com/8KStudio/8KStudio.github.io/releases/download/Flanime/app-release.apk');
 
     // Example usage: Add social media links
     addSocialMedia('Facebook', 'https://www.facebook.com/profile.php?id=61557975616511&mibextid=ZbWKwL', 'Facebook.png');
