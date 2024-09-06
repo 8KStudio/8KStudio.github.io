@@ -3,76 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi-URL Converter</title>
+    <title>Link Converter</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 50px;
-        }
-        .container {
+            background-color: #f4f4f4;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            gap: 10px;
+            height: 100vh;
+            margin: 0;
         }
-        input, button {
-            padding: 10px;
-            font-size: 16px;
-            width: 300px;
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+            text-align: center;
         }
-        textarea {
-            width: 300px;
-            height: 100px;
-            font-size: 16px;
+
+        input[type="text"] {
+            width: calc(100% - 22px);
             padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #outputLink {
+            margin: 10px 0;
+            font-weight: bold;
+        }
+
+        .info {
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        .notification {
+            display: none;
             margin-top: 10px;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
+    <div class="container">
+        <label for="inputLink">Link Mentah:</label>
+        <input type="text" id="inputLink" placeholder="Masukkan link di sini">
+        <button onclick="convertLink()">Convert</button>
+        <p id="outputLink">Link yang sudah jadi akan muncul di sini.</p>
+        <p class="info">Link yang mendukung:</p>
+        <ul>
+            <li>nimegami.id</li>
+            <li>acefile.co</li>
+            <li>krakenfiles.com</li>
+            <li>mega.nz</li>
+            <li>vidhideplus.com</li>
+            <li>vidhidepro.com</li>
+        </ul>
+        <div id="notification" class="notification"></div>
+    </div>
 
-<div class="container">
-    <label for="rawLink">Link Mentah:</label>
-    <input type="text" id="rawLink" placeholder="Masukkan link mentah di sini">
+    <script>
+        function convertLink() {
+            const inputLink = document.getElementById('inputLink').value;
+            let outputLink = '';
 
-    <button onclick="convertLink()">Konversi</button>
+            if (inputLink.includes('nimegami.id')) {
+                const id = inputLink.split('id=')[1];
+                outputLink = `https://dl.berkasdrive.com/streaming/?id=${id}`;
+            } else if (inputLink.includes('acefile.co')) {
+                const parts = inputLink.split('/');
+                const idfile = parts[4];
+                const namafile = parts[5];
+                outputLink = `https://acefile.co/player/${idfile}/${namafile}`;
+            } else if (inputLink.includes('krakenfiles.com')) {
+                const idfile = inputLink.split('/view/')[1].split('/file.html')[0];
+                outputLink = `https://krakenfiles.com/embed-video/${idfile}`;
+            } else if (inputLink.includes('mega.nz')) {
+                const idfile = inputLink.split('/file/')[1];
+                outputLink = `https://mega.nz/embed/${idfile}`;
+            } else if (inputLink.includes('vidhideplus.com')) {
+                const idfile = inputLink.split('/file/')[1];
+                outputLink = `https://vidhideplus.com/embed/${idfile}`;
+            } else if (inputLink.includes('vidhidepro.com')) {
+                const idfile = inputLink.split('/f/')[1];
+                outputLink = `https://vidhidepro.com/embed/${idfile}`;
+            } else {
+                outputLink = 'Link tidak didukung';
+            }
 
-    <textarea id="convertedLink" readonly placeholder="Hasil link terkonversi akan muncul di sini"></textarea>
-    <p>mendukung nimegami, krakenfiles, mega, dan acefile</p>
-</div>
+            // Tampilkan link yang sudah jadi
+            document.getElementById('outputLink').textContent = outputLink;
 
-<script>
-    function convertLink() {
-        // Mendapatkan nilai link mentah
-        const rawLink = document.getElementById('rawLink').value;
-        let convertedLink = rawLink;
+            // Salin link ke clipboard
+            navigator.clipboard.writeText(outputLink).then(() => {
+                // Tampilkan notifikasi
+                const notification = document.getElementById('notification');
+                notification.textContent = 'Link telah disalin ke papan klip!';
+                notification.style.display = 'block';
 
-        // Logika konversi untuk Krakenfile
-        if (rawLink.includes("krakenfiles.com")) {
-            convertedLink = rawLink.replace("/view/", "/embed-video/").replace("/file.html", "");
-        } 
-        // Logika konversi untuk Nimegami
-        else if (rawLink.includes("dl.berkasdrive.com")) {
-            // Misal: Mengganti "/anime/" menjadi "/embed-anime/" dan menghapus "/details.html"
-            convertedLink = rawLink.replace("https://dl.berkasdrive.com/", "https://dl.berkasdrive.com/streaming/");
+                // Sembunyikan notifikasi setelah 3 detik
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 3000);
+            }).catch(err => {
+                console.error('Gagal menyalin ke clipboard', err);
+            });
         }
-        // Logika konversi untuk Gofile
-        else if (rawLink.includes("acefile.co")) {
-            // Misal: Mengganti "/d/" menjadi "/embed/" 
-            convertedLink = rawLink.replace("/f/", "/player/");
-        }
-        // Logika konversi untuk Mega
-        else if (rawLink.includes("mega.nz")) {
-            // Misal: Mengubah link berbagi menjadi link download langsung
-            convertedLink = rawLink.replace("/file/", "/embed/"); 
-        }
-        
-        
-
-        // Menampilkan hasil konversi
-        document.getElementById('convertedLink').value = convertedLink;
-    }
-</script>
-
+    </script>
 </body>
 </html>
